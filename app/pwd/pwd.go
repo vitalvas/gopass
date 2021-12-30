@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	lowerCharSet   = "abcdefghjkmnpqrstuvwxyz"
+	lowerCharSet   = "abcdefghkmnpqrstuvwxyz"
 	upperCharSet   = "ABCDEFGHJKMNPQRSTUVWXYZ"
-	numberSet      = "023456789"
+	numberSet      = "23456789"
 	specialCharSet = "_!@#%+$"
 	allCharSet     = lowerCharSet + upperCharSet
 )
