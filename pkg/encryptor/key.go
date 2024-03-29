@@ -1,37 +1,35 @@
 package encryptor
 
 import (
-	"encoding/base64"
 	"errors"
 
 	"golang.org/x/crypto/chacha20poly1305"
 )
 
-func (e *Encryptor) EncryptKey(text string) (string, error) {
+func (e *Encryptor) EncryptKey(text string) ([]byte, error) {
 	if e.keyAead == nil {
-		return "", errors.New("no key encryption key")
+		return nil, errors.New("no key encryption key")
+	}
+
+	if text == "" {
+		return nil, errors.New("empty text")
 	}
 
 	nonce := make([]byte, chacha20poly1305.NonceSizeX)
 
 	ciphertext := e.keyAead.Seal(nil, nonce, []byte(text), nil)
 
-	return base64.RawURLEncoding.EncodeToString(ciphertext), nil
+	return ciphertext, nil
 }
 
-func (e *Encryptor) DecryptKey(text string) (string, error) {
+func (e *Encryptor) DecryptKey(text []byte) (string, error) {
 	if e.keyAead == nil {
 		return "", errors.New("no key encryption key")
 	}
 
 	nonce := make([]byte, chacha20poly1305.NonceSizeX)
 
-	keyBytes, err := base64.RawURLEncoding.DecodeString(text)
-	if err != nil {
-		return "", err
-	}
-
-	plaintext, err := e.keyAead.Open(nil, nonce, keyBytes, nil)
+	plaintext, err := e.keyAead.Open(nil, nonce, text, nil)
 	if err != nil {
 		return "", err
 	}
