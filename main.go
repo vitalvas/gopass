@@ -3,17 +3,11 @@ package main
 import (
 	"log"
 
-	"github.com/vitalvas/gopass/cmd"
-)
-
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
+	"github.com/vitalvas/gopass/internal/commands"
 )
 
 func main() {
-	if err := cmd.Execute(version, commit, date); err != nil {
+	if err := commands.Execute(); err != nil {
 		log.Fatal(err)
 	}
 }

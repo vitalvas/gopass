@@ -17,7 +17,7 @@ func (e *Encryptor) EncryptValue(key string, text []byte) (string, error) {
 
 	ciphertext := e.keyAead.Seal(nil, nonce, text, nil)
 
-	return base64.URLEncoding.EncodeToString(ciphertext), nil
+	return base64.RawURLEncoding.EncodeToString(ciphertext), nil
 }
 
 func (e *Encryptor) DecryptValue(key string, text string) ([]byte, error) {
@@ -27,7 +27,7 @@ func (e *Encryptor) DecryptValue(key string, text string) ([]byte, error) {
 
 	nonce := getNonce(key)
 
-	valueBytes, err := base64.URLEncoding.DecodeString(text)
+	valueBytes, err := base64.RawURLEncoding.DecodeString(text)
 	if err != nil {
 		return nil, err
 	}
