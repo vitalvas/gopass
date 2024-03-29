@@ -9,6 +9,10 @@ func (e *Encryptor) EncryptValue(key []byte, text string) ([]byte, error) {
 		return nil, errors.New("no value encryption key")
 	}
 
+	if key == nil {
+		return nil, errors.New("empty key")
+	}
+
 	if text == "" {
 		return nil, errors.New("empty text")
 	}
@@ -23,6 +27,14 @@ func (e *Encryptor) EncryptValue(key []byte, text string) ([]byte, error) {
 func (e *Encryptor) DecryptValue(key []byte, text []byte) ([]byte, error) {
 	if e.valueAead == nil {
 		return nil, errors.New("no value encryption key")
+	}
+
+	if key == nil {
+		return nil, errors.New("empty key")
+	}
+
+	if text == nil {
+		return nil, errors.New("empty text")
 	}
 
 	nonce := getNonce(key)
