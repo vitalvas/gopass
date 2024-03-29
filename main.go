@@ -16,5 +16,4 @@ func main() {
 	if err := cmd.Execute(version, commit, date); err != nil {
 		log.Fatal(err)
 	}
-
 }

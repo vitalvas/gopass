@@ -19,12 +19,12 @@ var pwgenStr bool
 func init() {
 	rootCmd.AddCommand(pwgenCmd)
 
-	pwgenCmd.PersistentFlags().IntVar(&pwgenLen, "len", 24, "Password length")
+	pwgenCmd.PersistentFlags().IntVar(&pwgenLen, "len", 15, "Password length")
 	pwgenCmd.PersistentFlags().BoolVar(&pwgenIPMI, "ipmi", false, "Password for IPMI")
 	pwgenCmd.PersistentFlags().BoolVarP(&pwgenStr, "str", "s", false, "String chars only")
 }
 
-func pwgen(cmd *cobra.Command, args []string) {
+func pwgen(_ *cobra.Command, _ []string) {
 	specialCharsLen := 2
 	numLen := 3
 

@@ -3,7 +3,6 @@ package pwd
 import (
 	"math/rand"
 	"strings"
-	"time"
 )
 
 const (
@@ -14,28 +13,24 @@ const (
 	allCharSet     = lowerCharSet + upperCharSet
 )
 
-func init() {
-	rand.Seed(time.Now().UTC().UnixNano())
-}
-
 func GeneratePassword(passwordLength, specialCharsLen, numLen int) string {
 	var password strings.Builder
 
 	// Set special character
 	for i := 0; i < specialCharsLen; i++ {
-		random := rand.Intn(len(specialCharSet))
+		random := rand.Intn(len(specialCharSet)) //nolint:gosec
 		password.WriteString(string(specialCharSet[random]))
 	}
 
 	// Set numeric
 	for i := 0; i < numLen; i++ {
-		random := rand.Intn(len(numberSet))
+		random := rand.Intn(len(numberSet)) //nolint:gosec
 		password.WriteString(string(numberSet[random]))
 	}
 
 	remainingLength := passwordLength - specialCharsLen - numLen
 	for i := 0; i < remainingLength; i++ {
-		random := rand.Intn(len(allCharSet))
+		random := rand.Intn(len(allCharSet)) //nolint:gosec
 		password.WriteString(string(allCharSet[random]))
 	}
 
