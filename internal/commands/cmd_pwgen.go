@@ -32,9 +32,10 @@ var pwgenCmd = &cli.Command{
 			Value: password.DefaultNumbersLength,
 		},
 		&cli.IntFlag{
-			Name:  "variants",
-			Usage: "Number of variants",
-			Value: 5,
+			Name:    "variants",
+			Aliases: []string{"v"},
+			Usage:   "Number of variants",
+			Value:   5,
 		},
 		&cli.BoolFlag{
 			Name:    "string",
