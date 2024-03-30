@@ -11,7 +11,7 @@ import (
 )
 
 func (v *Vault) ListKeys() ([][]byte, error) {
-	fileList, err := filepath.Glob(filepath.Join(v.storagePath, "*", "*", "*", fmt.Sprintf("*%s", fileExtension)))
+	fileList, err := filepath.Glob(filepath.Join(v.storagePath, "*", "*", fmt.Sprintf("*%s", fileExtension)))
 	if err != nil {
 		return nil, fmt.Errorf("failed to list files: %w", err)
 	}

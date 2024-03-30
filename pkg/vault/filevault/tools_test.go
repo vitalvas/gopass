@@ -4,8 +4,8 @@ import "testing"
 
 func TestGetKeyPath(t *testing.T) {
 	key := []byte{0x01, 0x02, 0x03, 0x04}
-	expectedPath := "01/02/03/01020304.txt"
-	expectedDir := "01/02/03"
+	expectedPath := "04/03/01020304.txt"
+	expectedDir := "04/03"
 
 	filePath, fileDir := getKeyPath(key)
 	if filePath != expectedPath {
