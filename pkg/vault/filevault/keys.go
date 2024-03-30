@@ -111,7 +111,7 @@ func (v *Vault) DeleteKey(key []byte) error {
 		return fmt.Errorf("failed to read directory: %w", err)
 	}
 
-	if files == nil {
+	if len(files) == 0 {
 		if err := os.Remove(filepath.Join(v.storagePath, fileDir)); err != nil {
 			return fmt.Errorf("failed to delete directory: %w", err)
 		}

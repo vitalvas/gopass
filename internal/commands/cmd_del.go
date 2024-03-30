@@ -31,6 +31,12 @@ var delCmd = &cli.Command{
 			return fmt.Errorf("failed to encrypt key name: %w", err)
 		}
 
-		return store.DeleteKey(encKeyName)
+		if err := store.DeleteKey(encKeyName); err != nil {
+			return fmt.Errorf("failed to delete key: %w", err)
+		}
+
+		fmt.Println("Key deleted")
+
+		return nil
 	},
 }
