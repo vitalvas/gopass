@@ -93,6 +93,29 @@ func (v *Vault) SetKey(key []byte, value []byte) error {
 	return nil
 }
 
-func (v *Vault) DeleteKey(_ []byte) error {
+func (v *Vault) DeleteKey(key []byte) error {
+	filePath, fileDir := getKeyPath(key)
+
+	fullFilePath := filepath.Join(v.storagePath, filePath)
+
+	if _, err := os.Stat(fullFilePath); os.IsNotExist(err) {
+		return errors.New("key not found")
+	}
+
+	if err := os.Remove(fullFilePath); err != nil {
+		return fmt.Errorf("failed to delete file: %w", err)
+	}
+
+	files, err := os.ReadDir(filepath.Join(v.storagePath, fileDir))
+	if err != nil {
+		return fmt.Errorf("failed to read directory: %w", err)
+	}
+
+	if files == nil {
+		if err := os.Remove(filepath.Join(v.storagePath, fileDir)); err != nil {
+			return fmt.Errorf("failed to delete directory: %w", err)
+		}
+	}
+
 	return nil
 }
