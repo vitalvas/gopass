@@ -16,7 +16,7 @@ func ValidateName(name string) error {
 }
 
 func ValidateKeyName(name string) error {
-	if match, err := regexp.MatchString("^([0-9a-z-_./]{3,64})$", name); err != nil {
+	if match, err := regexp.MatchString("^([0-9a-z-_./]{3,128})$", name); err != nil {
 		return fmt.Errorf("failed to validate key name: %w", err)
 	} else if !match {
 		return fmt.Errorf("invalid key name: %s", name)

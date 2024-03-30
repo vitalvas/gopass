@@ -1,6 +1,9 @@
 package vault
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestValidateName(t *testing.T) {
 	for _, tc := range []struct {
@@ -43,7 +46,7 @@ func TestValidateKeyName(t *testing.T) {
 		{"aa", false},
 		{"aaa", true},
 		{"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", true},
-		{"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", false},
+		{strings.Repeat("a", 129), false},
 		{"a a", false},
 		{"a-a", true},
 		{"a_a", true},

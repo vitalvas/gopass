@@ -13,22 +13,10 @@ func init() {
 }
 
 var generateCmd = &cli.Command{
-	Name:  "generate",
-	Usage: "Generate and store a new password",
+	Name:      "generate",
+	Usage:     "Generate and store a new password",
+	ArgsUsage: "<key name>",
 	Flags: []cli.Flag{
-		&cli.StringFlag{
-			Name:     "name",
-			Aliases:  []string{"n"},
-			Usage:    "Name of the password",
-			Required: true,
-			Action: func(_ *cli.Context, name string) error {
-				if err := vault.ValidateKeyName(name); err != nil {
-					return err
-				}
-
-				return nil
-			},
-		},
 		&cli.BoolFlag{
 			Name:  "force",
 			Usage: "Force overwrite existing key",
@@ -36,7 +24,15 @@ var generateCmd = &cli.Command{
 	},
 	Before: loader,
 	Action: func(c *cli.Context) error {
-		keyName := c.String("name")
+		if c.Args().Len() != 1 {
+			return fmt.Errorf("invalid number of arguments")
+		}
+
+		keyName := c.Args().First()
+		if err := vault.ValidateKeyName(keyName); err != nil {
+			return err
+		}
+
 		encKeyName, err := encrypt.EncryptKey(keyName)
 		if err != nil {
 			return fmt.Errorf("failed to encrypt key name: %w", err)
