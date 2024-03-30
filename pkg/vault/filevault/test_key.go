@@ -9,11 +9,22 @@ import (
 const testKeyName = ".test_key"
 
 func (v *Vault) GetTestKey() ([]byte, error) {
-	return nil, nil
+	testKeyPath := filepath.Join(v.storagePath, testKeyName)
+
+	payload, err := os.ReadFile(testKeyPath)
+	if err != nil {
+		return nil, err
+	}
+
+	payloadPlain, err := base64.RawURLEncoding.DecodeString(string(payload))
+	if err != nil {
+		return nil, err
+	}
+
+	return payloadPlain, nil
 }
 
 func (v *Vault) SetTestKey(value []byte) error {
-
 	testKeyPath := filepath.Join(v.storagePath, testKeyName)
 
 	file, err := os.Create(testKeyPath)

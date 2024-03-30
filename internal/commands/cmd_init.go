@@ -124,7 +124,7 @@ var initCmd = &cli.Command{
 
 		if resp, err := store.GetTestKey(); err != nil {
 			return fmt.Errorf("failed to get test key: %w", err)
-		} else if bytes.Equal(resp, testEncrypted) {
+		} else if !bytes.Equal(resp, testEncrypted) {
 			return fmt.Errorf("test key mismatch")
 		}
 
