@@ -80,10 +80,6 @@ var initCmd = &cli.Command{
 			vaultConfig.EncryptionKey = password.Generate(24, 0, 8)
 		}
 
-		if len(vaultConfig.EncryptionValue) <= 8 {
-			vaultConfig.EncryptionValue = password.Generate(32, 0, 8)
-		}
-
 		configDir := strings.TrimRight(vaultConfigPath, filepath.Base(vaultConfigPath))
 		if _, err := os.Stat(configDir); os.IsNotExist(err) {
 			log.Printf("creating vault config directory: %s", configDir)

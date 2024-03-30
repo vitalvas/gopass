@@ -4,12 +4,12 @@ import (
 	"errors"
 )
 
-func (e *Encryptor) EncryptValue(key []byte, text string) ([]byte, error) {
+func (e *Encryptor) EncryptValue(key string, text string) ([]byte, error) {
 	if e.valueAead == nil {
 		return nil, errors.New("no value encryption key")
 	}
 
-	if key == nil {
+	if key == "" {
 		return nil, errors.New("empty key")
 	}
 
@@ -24,12 +24,12 @@ func (e *Encryptor) EncryptValue(key []byte, text string) ([]byte, error) {
 	return ciphertext, nil
 }
 
-func (e *Encryptor) DecryptValue(key []byte, text []byte) ([]byte, error) {
+func (e *Encryptor) DecryptValue(key string, text []byte) ([]byte, error) {
 	if e.valueAead == nil {
 		return nil, errors.New("no value encryption key")
 	}
 
-	if key == nil {
+	if key == "" {
 		return nil, errors.New("empty key")
 	}
 

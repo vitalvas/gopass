@@ -20,19 +20,3 @@ func New(storagePath string) *Vault {
 func (v *Vault) Close() error {
 	return nil
 }
-
-func (v *Vault) ListKeys() ([][]byte, error) {
-	return nil, nil
-}
-
-func (v *Vault) GetKey(_ []byte) ([]byte, error) {
-	return nil, nil
-}
-
-func (v *Vault) SetKey(_ []byte, _ []byte) error {
-	return nil
-}
-
-func (v *Vault) DeleteKey(_ []byte) error {
-	return nil
-}

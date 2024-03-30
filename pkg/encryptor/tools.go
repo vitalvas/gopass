@@ -5,8 +5,8 @@ import (
 	"golang.org/x/crypto/chacha20poly1305"
 )
 
-func getNonce(key []byte) []byte {
-	keyHashed := blake2b.Sum512(key)
+func getNonce(key string) []byte {
+	keyHashed := blake2b.Sum512([]byte(key))
 
 	var data []byte
 
