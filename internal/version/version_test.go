@@ -7,11 +7,15 @@ import (
 
 func TestVersion(t *testing.T) {
 	bi, ok := debug.ReadBuildInfo()
-	if !ok {
-		t.Fatal("ReadBuildInfo failed")
-	}
 
-	if got, want := Version(), bi.Main.Version; got != want {
-		t.Errorf("Version() = %q; want %q", got, want)
+	got := Version()
+	if ok {
+		if got != bi.Main.Version {
+			t.Errorf("Version() = %q, want %q", got, bi.Main.Version)
+		}
+	} else {
+		if got != BuildVersion {
+			t.Errorf("Version() = %q, want %q", got, BuildVersion)
+		}
 	}
 }
