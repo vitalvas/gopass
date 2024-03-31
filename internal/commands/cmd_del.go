@@ -7,13 +7,10 @@ import (
 	"github.com/vitalvas/gopass/pkg/vault"
 )
 
-func init() {
-	commands = append(commands, delCmd)
-}
-
 var delCmd = &cli.Command{
 	Name:      "del",
-	Usage:     "Delete a key",
+	Aliases:   []string{"delete"},
+	Usage:     "Delete a stored key",
 	ArgsUsage: "<key name>",
 	Before:    loader,
 	Action: func(c *cli.Context) error {

@@ -7,10 +7,6 @@ import (
 	"github.com/vitalvas/gopass/pkg/password"
 )
 
-func init() {
-	commands = append(commands, pwgenCmd)
-}
-
 var pwgenCmd = &cli.Command{
 	Name:  "pwgen",
 	Usage: "Generate a random password",

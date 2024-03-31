@@ -8,10 +8,6 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func init() {
-	commands = append(commands, listCmd)
-}
-
 var listCmd = &cli.Command{
 	Name:    "list",
 	Aliases: []string{"ls"},

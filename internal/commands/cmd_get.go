@@ -7,13 +7,9 @@ import (
 	"github.com/vitalvas/gopass/pkg/vault"
 )
 
-func init() {
-	commands = append(commands, getCmd)
-}
-
 var getCmd = &cli.Command{
 	Name:      "get",
-	Usage:     "Get a stored password",
+	Usage:     "Get a stored key",
 	ArgsUsage: "<key name>",
 	Before:    loader,
 	Action: func(c *cli.Context) error {

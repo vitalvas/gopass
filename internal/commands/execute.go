@@ -8,8 +8,6 @@ import (
 	"github.com/vitalvas/gopass/pkg/vault"
 )
 
-var commands = []*cli.Command{}
-
 func Execute() error {
 	app := &cli.App{
 		Name:    "gopass",
@@ -23,7 +21,14 @@ func Execute() error {
 				Value:   "default",
 			},
 		},
-		Commands: commands,
+		Commands: []*cli.Command{
+			initCmd,
+			pwgenCmd,
+			generateCmd,
+			listCmd,
+			getCmd,
+			delCmd,
+		},
 		Before: func(c *cli.Context) error {
 			return vault.ValidateName(c.String("vault"))
 		},

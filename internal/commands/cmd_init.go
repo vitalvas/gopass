@@ -17,10 +17,6 @@ import (
 	"github.com/vitalvas/gopass/pkg/vault/filevault"
 )
 
-func init() {
-	commands = append(commands, initCmd)
-}
-
 var initCmd = &cli.Command{
 	Name:  "init",
 	Usage: "Initialize a new password store",

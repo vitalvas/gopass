@@ -8,10 +8,6 @@ import (
 	"github.com/vitalvas/gopass/pkg/vault"
 )
 
-func init() {
-	commands = append(commands, generateCmd)
-}
-
 var generateCmd = &cli.Command{
 	Name:      "generate",
 	Usage:     "Generate and store a new password",
