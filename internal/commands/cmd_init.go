@@ -26,8 +26,8 @@ var initCmd = &cli.Command{
 	Usage: "Initialize a new password store",
 	Flags: []cli.Flag{
 		&cli.StringFlag{
-			Name:       "store-uri",
-			Usage:      "Store URI",
+			Name:       "address",
+			Usage:      "Store address",
 			Value:      fmt.Sprintf("file://%s/.gopass/{{vault}}", os.Getenv("HOME")),
 			Required:   true,
 			HasBeenSet: true,
@@ -39,9 +39,9 @@ var initCmd = &cli.Command{
 		},
 	},
 	Action: func(c *cli.Context) error {
-		parsed, err := url.Parse(c.String("store-uri"))
+		parsed, err := url.Parse(c.String("address"))
 		if err != nil {
-			return fmt.Errorf("failed to parse store URI: %w", err)
+			return fmt.Errorf("failed to parse store address: %w", err)
 		}
 
 		if parsed.Scheme != "file" {
@@ -71,7 +71,7 @@ var initCmd = &cli.Command{
 		}
 
 		if len(vaultConfig.EncryptionKey) <= 8 {
-			vaultConfig.EncryptionKey = password.Generate(24, 0, 8)
+			vaultConfig.EncryptionKey = password.Generate(32, 0, 8)
 		}
 
 		configDir := strings.TrimRight(vaultConfigPath, filepath.Base(vaultConfigPath))
