@@ -76,6 +76,7 @@ func TestDecryptValue(t *testing.T) {
 		{"short", testEncryptKey, "zWV8X161oRP8zFxDOCWvrz7zJ4b9", "short", false},
 		{"long", testEncryptKey, "0WN2Al6Chn5c14HrOvOyG7ugkTselat4wvqTL8gLCG8yyid5iD16", "one/two/there/pass/name", false},
 		{"very-long", testEncryptKey, "0WN2Al6Chn5c14HrOvOyG7ugkTselavXfqekznZlO9GWfXXzjCsND5FbAh4MRzMovx87-Y1dg3_mXwTSQ4dBQMzb4rikoYbFhvwLBpMVg7QvKNbUK4Iboe0DJg5SFisi7yeH7v3uEEBbOoL5PXqmxEZtQ0YEooGCxFObqpJ6Bx4kb7LPRT0hFQTuq3QXF12TnPMOFpKad1dUtbcV7U3z60fWEON78dkhGdAQwB01WVwPJmyE6UPqd502FxnSuNixqnWy9kXGUi4", strings.Repeat("one/two/there/pass/name", 8), false},
+		{"invalid-text", testEncryptKey, "invalid", "", true},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			var (

@@ -5,10 +5,13 @@ import (
 	"regexp"
 )
 
+var (
+	validateNameRegex    = regexp.MustCompile("^([0-9a-z-_.]{3,32})$")
+	validateKeyNameRegex = regexp.MustCompile("^([0-9a-z-_./]{3,128})$")
+)
+
 func ValidateName(name string) error {
-	if match, err := regexp.MatchString("^([0-9a-z-_.]{3,32})$", name); err != nil {
-		return fmt.Errorf("failed to validate vault name: %w", err)
-	} else if !match {
+	if !validateNameRegex.MatchString(name) {
 		return fmt.Errorf("invalid vault name: %s", name)
 	}
 
@@ -16,9 +19,7 @@ func ValidateName(name string) error {
 }
 
 func ValidateKeyName(name string) error {
-	if match, err := regexp.MatchString("^([0-9a-z-_./]{3,128})$", name); err != nil {
-		return fmt.Errorf("failed to validate key name: %w", err)
-	} else if !match {
+	if !validateKeyNameRegex.MatchString(name) {
 		return fmt.Errorf("invalid key name: %s", name)
 	}
 
