@@ -17,7 +17,7 @@ Cli commands are as compatible as possible (about 90%), to preserve user experie
 | Feature | GoPass | Pass |
 | --- | --- | --- |
 | Storage | Plugin backend | Encrypted files |
-| Encryption | Symetric (ChaCha20-Poly1305) | Asymetric (GPG) |
+| Encryption | Symetric (XChaCha20-Poly1305) | Asymetric (GPG) |
 | Encryption key | Yes | No |
 | Encryption value | Yes | Yes |
 | Password generation | Yes | Yes |
@@ -29,7 +29,7 @@ Cli commands are as compatible as possible (about 90%), to preserve user experie
 
 ## Security
 
-GoPass uses the ChaCha20-Poly1305 algorithm for encryption. The system represents itself as a key-value store.
+GoPass uses the XChaCha20-Poly1305 algorithm for encryption. The system represents itself as a key-value store.
 
 Encryption and decryption occurs on the cli side, which allows you to protect data during transmission and storage.
 

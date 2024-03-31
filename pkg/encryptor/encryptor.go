@@ -15,14 +15,14 @@ type Encryptor struct {
 
 func NewEncryptor(keySecret string) (*Encryptor, error) {
 	if keySecret == "" {
-		return nil, errors.New("no key encryption key")
+		return nil, errors.New("no encryption key")
 	}
 
 	keySecretBytes := []byte(keySecret)
 
 	keyHash := blake2b.Sum256(keySecretBytes)
 
-	keyAead, err := chacha20poly1305.NewX(keyHash[:32])
+	keyAead, err := chacha20poly1305.NewX(keyHash[:chacha20poly1305.KeySize])
 	if err != nil {
 		return nil, err
 	}
@@ -31,9 +31,7 @@ func NewEncryptor(keySecret string) (*Encryptor, error) {
 		append(keySecretBytes, keyHash[:]...),
 	)
 
-	valueSecretKey := valueHash[:32]
-
-	valueAead, err := chacha20poly1305.NewX(valueSecretKey)
+	valueAead, err := chacha20poly1305.NewX(valueHash[:chacha20poly1305.KeySize])
 	if err != nil {
 		return nil, err
 	}
