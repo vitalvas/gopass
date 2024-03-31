@@ -11,6 +11,14 @@ func TestEncryptKey(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
+	t.Run("invalid keyAead", func(t *testing.T) {
+		enc := &Encryptor{}
+
+		if _, err := enc.EncryptKey("test"); err == nil {
+			t.Fatalf("expected error, got nil")
+		}
+	})
+
 	for _, tc := range []struct {
 		name  string
 		text  string
@@ -44,6 +52,14 @@ func TestDecryptKey(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
+
+	t.Run("invalid keyAead", func(t *testing.T) {
+		enc := &Encryptor{}
+
+		if _, err := enc.DecryptKey(nil); err == nil {
+			t.Fatalf("expected error, got nil")
+		}
+	})
 
 	for _, tc := range []struct {
 		name  string
