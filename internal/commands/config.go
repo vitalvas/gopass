@@ -66,7 +66,7 @@ func vaultLoader(_ *cli.Context) error {
 
 func encryptLoader(_ *cli.Context) error {
 	var err error
-	encrypt, err = encryptor.NewEncryptor(vaultConfig.EncryptionKey, vaultConfig.EncryptionValue)
+	encrypt, err = encryptor.NewEncryptor(vaultConfig.EncryptionKey)
 	if err != nil {
 		return fmt.Errorf("failed to create encryptor: %w", err)
 	}

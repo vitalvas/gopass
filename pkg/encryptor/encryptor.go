@@ -13,13 +13,12 @@ type Encryptor struct {
 	valueAead cipher.AEAD
 }
 
-func NewEncryptor(keySecret, valueSecret string) (*Encryptor, error) {
+func NewEncryptor(keySecret string) (*Encryptor, error) {
 	if keySecret == "" {
 		return nil, errors.New("no key encryption key")
 	}
 
 	keySecretBytes := []byte(keySecret)
-	valueSecretBytes := []byte(valueSecret)
 
 	keyHash := blake2b.Sum256(keySecretBytes)
 
@@ -28,19 +27,11 @@ func NewEncryptor(keySecret, valueSecret string) (*Encryptor, error) {
 		return nil, err
 	}
 
-	var valueSecretKey []byte
+	valueHash := blake2b.Sum256(
+		append(keySecretBytes, keyHash[:]...),
+	)
 
-	if valueSecretBytes != nil {
-		valueHash := blake2b.Sum256(valueSecretBytes)
-		valueSecretKey = valueHash[:32]
-
-	} else {
-		valueHash := blake2b.Sum256(
-			append(keySecretBytes, keyHash[:]...),
-		)
-
-		valueSecretKey = valueHash[:32]
-	}
+	valueSecretKey := valueHash[:32]
 
 	valueAead, err := chacha20poly1305.NewX(valueSecretKey)
 	if err != nil {

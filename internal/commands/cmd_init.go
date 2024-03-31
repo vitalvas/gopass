@@ -37,11 +37,6 @@ var initCmd = &cli.Command{
 			Usage:   "Encryption key for key (generated if not set)",
 			EnvVars: []string{"GOPASS_ENCRYPTION_KEY"},
 		},
-		&cli.StringFlag{
-			Name:    "encryption-value",
-			Usage:   "Encryption key for value (generated if not set)",
-			EnvVars: []string{"GOPASS_ENCRYPTION_VALUE"},
-		},
 	},
 	Action: func(c *cli.Context) error {
 		parsed, err := url.Parse(c.String("store-uri"))
@@ -70,10 +65,9 @@ var initCmd = &cli.Command{
 		}
 
 		vaultConfig := vault.Config{
-			Name:            c.String("vault"),
-			Address:         parsed.String(),
-			EncryptionKey:   c.String("encryption-key"),
-			EncryptionValue: c.String("encryption-value"),
+			Name:          c.String("vault"),
+			Address:       parsed.String(),
+			EncryptionKey: c.String("encryption-key"),
 		}
 
 		if len(vaultConfig.EncryptionKey) <= 8 {
@@ -102,7 +96,7 @@ var initCmd = &cli.Command{
 			return fmt.Errorf("failed to write vault config: %w", err)
 		}
 
-		enc, err := encryptor.NewEncryptor(vaultConfig.EncryptionKey, vaultConfig.EncryptionValue)
+		enc, err := encryptor.NewEncryptor(vaultConfig.EncryptionKey)
 		if err != nil {
 			return fmt.Errorf("failed to create encryptor: %w", err)
 		}

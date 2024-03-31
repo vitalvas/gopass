@@ -6,7 +6,7 @@ import (
 )
 
 func TestEncryptKey(t *testing.T) {
-	enc, err := NewEncryptor(testEncryptKey, testEncryptVal)
+	enc, err := NewEncryptor(testEncryptKey)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -40,7 +40,7 @@ func TestEncryptKey(t *testing.T) {
 }
 
 func TestDecryptKey(t *testing.T) {
-	enc, err := NewEncryptor(testEncryptKey, testEncryptVal)
+	enc, err := NewEncryptor(testEncryptKey)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
