@@ -17,7 +17,7 @@ Cli commands are as compatible as possible (about 90%), to preserve user experie
 | Feature | GoPass | Pass |
 | --- | --- | --- |
 | Storage | Plugin backend | Encrypted files |
-| Encryption | ChaCha20-Poly1305 | GPG |
+| Encryption | Symetric (ChaCha20-Poly1305) | Asymetric (GPG) |
 | Encryption key | Yes | No |
 | Encryption value | Yes | Yes |
 | Password generation | Yes | Yes |
