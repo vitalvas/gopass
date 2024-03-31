@@ -5,7 +5,7 @@ import (
 )
 
 func (e *Encryptor) EncryptValue(key string, text string) ([]byte, error) {
-	if e.valueAead == nil {
+	if e.keyAead == nil {
 		return nil, errors.New("no value encryption key")
 	}
 
@@ -25,7 +25,7 @@ func (e *Encryptor) EncryptValue(key string, text string) ([]byte, error) {
 }
 
 func (e *Encryptor) DecryptValue(key string, text []byte) ([]byte, error) {
-	if e.valueAead == nil {
+	if e.keyAead == nil {
 		return nil, errors.New("no value encryption key")
 	}
 

@@ -9,8 +9,7 @@ import (
 )
 
 type Encryptor struct {
-	keyAead   cipher.AEAD
-	valueAead cipher.AEAD
+	keyAead cipher.AEAD
 }
 
 func NewEncryptor(keySecret string) (*Encryptor, error) {
@@ -27,17 +26,7 @@ func NewEncryptor(keySecret string) (*Encryptor, error) {
 		return nil, err
 	}
 
-	valueHash := blake2b.Sum256(
-		append(keySecretBytes, keyHash[:]...),
-	)
-
-	valueAead, err := chacha20poly1305.NewX(valueHash[:chacha20poly1305.KeySize])
-	if err != nil {
-		return nil, err
-	}
-
 	return &Encryptor{
-		keyAead:   keyAead,
-		valueAead: valueAead,
+		keyAead: keyAead,
 	}, nil
 }
