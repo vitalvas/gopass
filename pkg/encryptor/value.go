@@ -13,7 +13,7 @@ func (e *Encryptor) EncryptValue(key string, text []byte) ([]byte, error) {
 		return nil, errors.New("empty key")
 	}
 
-	if text == nil || len(text) == 0 {
+	if len(text) == 0 {
 		return nil, errors.New("empty text")
 	}
 
