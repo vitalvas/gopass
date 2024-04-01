@@ -9,7 +9,7 @@ import (
 
 var deleteCmd = &cli.Command{
 	Name:      "delete",
-	Aliases:   []string{"del"},
+	Aliases:   []string{"del", "rm"},
 	Usage:     "Delete a stored key",
 	ArgsUsage: "<key name>",
 	Before:    loader,
@@ -23,16 +23,26 @@ var deleteCmd = &cli.Command{
 			return err
 		}
 
-		encKeyName, err := encrypt.EncryptKey(keyName)
-		if err != nil {
-			return fmt.Errorf("failed to encrypt key name: %w", err)
+		fmt.Printf("Are you sure you would like to delete %s? [y/N] ", keyName)
+		var confirm string
+		if _, err := fmt.Scanln(&confirm); err != nil {
+			return fmt.Errorf("failed to read confirmation: %w", err)
 		}
 
-		if err := store.DeleteKey(encKeyName); err != nil {
-			return fmt.Errorf("failed to delete key: %w", err)
-		}
+		if confirm == "y" {
+			encKeyName, err := encrypt.EncryptKey(keyName)
+			if err != nil {
+				return fmt.Errorf("failed to encrypt key name: %w", err)
+			}
 
-		fmt.Println("Key deleted")
+			if err := store.DeleteKey(encKeyName); err != nil {
+				return fmt.Errorf("failed to delete key: %w", err)
+			}
+
+			fmt.Println("Key deleted")
+		} else {
+			fmt.Println("Deletion aborted")
+		}
 
 		return nil
 	},
