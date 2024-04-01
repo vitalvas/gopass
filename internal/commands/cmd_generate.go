@@ -14,8 +14,9 @@ var generateCmd = &cli.Command{
 	ArgsUsage: "<key name>",
 	Flags: []cli.Flag{
 		&cli.BoolFlag{
-			Name:  "force",
-			Usage: "Force overwrite existing key",
+			Name:    "force",
+			Aliases: []string{"f"},
+			Usage:   "Force overwrite existing key",
 		},
 	},
 	Before: loader,
