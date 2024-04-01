@@ -29,6 +29,7 @@ func Execute() error {
 			generateCmd,
 			listCmd,
 			getCmd,
+			moveCmd,
 			deleteCmd,
 		},
 		Before: func(c *cli.Context) error {
