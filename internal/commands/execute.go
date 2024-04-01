@@ -10,9 +10,11 @@ import (
 
 func Execute() error {
 	app := &cli.App{
-		Name:    "gopass",
-		Usage:   "Simple password manager",
-		Version: version.Version(),
+		Name:                 "gopass",
+		Usage:                "Simple password manager",
+		Version:              version.Version(),
+		EnableBashCompletion: true,
+		HideHelpCommand:      true,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:    "vault",
@@ -27,7 +29,7 @@ func Execute() error {
 			generateCmd,
 			listCmd,
 			getCmd,
-			delCmd,
+			deleteCmd,
 		},
 		Before: func(c *cli.Context) error {
 			return vault.ValidateName(c.String("vault"))

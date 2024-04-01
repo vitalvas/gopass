@@ -7,9 +7,9 @@ import (
 	"github.com/vitalvas/gopass/pkg/vault"
 )
 
-var delCmd = &cli.Command{
-	Name:      "del",
-	Aliases:   []string{"delete"},
+var deleteCmd = &cli.Command{
+	Name:      "delete",
+	Aliases:   []string{"del"},
 	Usage:     "Delete a stored key",
 	ArgsUsage: "<key name>",
 	Before:    loader,
