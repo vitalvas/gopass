@@ -41,7 +41,16 @@ var generateCmd = &cli.Command{
 		}
 		pass := password.Generate(password.DefaultLength, password.DefaultLength, password.DefaultLength)
 
-		encValue, err := encrypt.EncryptValue(keyName, pass)
+		payload := vault.Payload{
+			Data: pass,
+		}
+
+		payloadEncoded, err := payload.Marshal()
+		if err != nil {
+			return fmt.Errorf("failed to marshal payload: %w", err)
+		}
+
+		encValue, err := encrypt.EncryptValue(keyName, payloadEncoded)
 		if err != nil {
 			return fmt.Errorf("failed to encrypt value: %w", err)
 		}

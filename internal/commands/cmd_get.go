@@ -37,7 +37,12 @@ var getCmd = &cli.Command{
 			return fmt.Errorf("failed to decrypt value: %w", err)
 		}
 
-		fmt.Println(string(value))
+		payload, err := vault.PayloadUnmarshal(value)
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal payload: %w", err)
+		}
+
+		fmt.Println(payload.Data)
 
 		return nil
 	},

@@ -15,7 +15,7 @@ func TestEncryptValue(t *testing.T) {
 	t.Run("invalid keyAead", func(t *testing.T) {
 		enc := &Encryptor{}
 
-		if _, err := enc.EncryptValue("test", "test"); err == nil {
+		if _, err := enc.EncryptValue("test", []byte("test")); err == nil {
 			t.Fatalf("expected error, got nil")
 		}
 	})
@@ -34,7 +34,7 @@ func TestEncryptValue(t *testing.T) {
 		{"very-long", testEncryptKey, strings.Repeat("one/two/there/pass/name", 8), "0WN2Al6Chn5c14HrOvOyG7ugkTselavXfqekznZlO9GWfXXzjCsND5FbAh4MRzMovx87-Y1dg3_mXwTSQ4dBQMzb4rikoYbFhvwLBpMVg7QvKNbUK4Iboe0DJg5SFisi7yeH7v3uEEBbOoL5PXqmxEZtQ0YEooGCxFObqpJ6Bx4kb7LPRT0hFQTuq3QXF12TnPMOFpKad1dUtbcV7U3z60fWEON78dkhGdAQwB01WVwPJmyE6UPqd502FxnSuNixqnWy9kXGUi4", false},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			row, err := enc.EncryptValue(tc.key, tc.text)
+			row, err := enc.EncryptValue(tc.key, []byte(tc.text))
 			if tc.err && err == nil {
 				t.Fatalf("expected error, got nil")
 			}

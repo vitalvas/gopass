@@ -4,7 +4,7 @@ import (
 	"errors"
 )
 
-func (e *Encryptor) EncryptValue(key string, text string) ([]byte, error) {
+func (e *Encryptor) EncryptValue(key string, text []byte) ([]byte, error) {
 	if e.keyAead == nil {
 		return nil, errors.New("no value encryption key")
 	}
@@ -13,13 +13,13 @@ func (e *Encryptor) EncryptValue(key string, text string) ([]byte, error) {
 		return nil, errors.New("empty key")
 	}
 
-	if text == "" {
+	if text == nil || len(text) == 0 {
 		return nil, errors.New("empty text")
 	}
 
 	nonce := getNonce(key)
 
-	ciphertext := e.keyAead.Seal(nil, nonce, []byte(text), nil)
+	ciphertext := e.keyAead.Seal(nil, nonce, text, nil)
 
 	return ciphertext, nil
 }
