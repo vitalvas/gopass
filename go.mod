@@ -3,7 +3,7 @@ module github.com/vitalvas/gopass
 go 1.22
 
 require (
-	github.com/urfave/cli/v2 v2.27.3
+	github.com/urfave/cli/v2 v2.27.4
 	golang.org/x/crypto v0.26.0
 )
 
