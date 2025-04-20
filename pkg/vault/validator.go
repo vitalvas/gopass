@@ -6,8 +6,8 @@ import (
 )
 
 var (
-	validateNameRegex    = regexp.MustCompile("^([0-9a-z-_.]{3,32})$")
-	validateKeyNameRegex = regexp.MustCompile("^([0-9a-z-_./]{3,128})$")
+	validateNameRegex    = regexp.MustCompile("^([0-9a-zA-Z-_.]{3,32})$")
+	validateKeyNameRegex = regexp.MustCompile("^([0-9a-zA-Z-_./]{3,128})$")
 )
 
 func ValidateName(name string) error {

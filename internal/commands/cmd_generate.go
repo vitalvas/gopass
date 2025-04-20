@@ -60,7 +60,7 @@ var generateCmd = &cli.Command{
 			return fmt.Errorf("failed to store key: %w", err)
 		}
 
-		fmt.Println("Password generated and stored successfully")
+		fmt.Println("Password generated and stored successfully:", keyName)
 
 		return nil
 	},
