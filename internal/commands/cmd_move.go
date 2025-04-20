@@ -50,6 +50,16 @@ var moveCmd = &cli.Command{
 			return fmt.Errorf("failed to get key: %w", err)
 		}
 
+		oldKeyPayloadDecrypted, err := encrypt.DecryptValue(keyName, oldKeyPayload)
+		if err != nil {
+			return fmt.Errorf("failed to decrypt key: %w", err)
+		}
+
+		newKeyPayload, err := encrypt.EncryptValue(newKeyName, oldKeyPayloadDecrypted)
+		if err != nil {
+			return fmt.Errorf("failed to encrypt new key: %w", err)
+		}
+
 		if _, err = store.GetKey(encNewKeyName); err == nil {
 			if !c.Bool("force") {
 				return fmt.Errorf("new key already exists")
@@ -60,7 +70,7 @@ var moveCmd = &cli.Command{
 			}
 		}
 
-		if err := store.SetKey(encNewKeyName, oldKeyPayload); err != nil {
+		if err := store.SetKey(encNewKeyName, newKeyPayload); err != nil {
 			return fmt.Errorf("failed to set key: %w", err)
 		}
 
