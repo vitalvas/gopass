@@ -1,10 +1,10 @@
 module github.com/vitalvas/gopass
 
 go 1.22
-toolchain go1.23.6
+toolchain go1.24.1
 
 require (
-	github.com/urfave/cli/v2 v2.27.5
+	github.com/urfave/cli/v2 v2.27.6
 	golang.org/x/crypto v0.35.0
 )
 
