@@ -51,7 +51,7 @@ var deleteCmd = &cli.Command{
 				return fmt.Errorf("failed to delete key: %w", err)
 			}
 
-			fmt.Printf("Key deleted: %s", keyName)
+			fmt.Println("Key deleted:", keyName)
 		} else {
 			fmt.Println("Deletion aborted")
 		}

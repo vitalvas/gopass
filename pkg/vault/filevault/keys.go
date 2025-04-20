@@ -94,7 +94,7 @@ func (v *Vault) SetKey(key []byte, value []byte) error {
 }
 
 func (v *Vault) DeleteKey(key []byte) error {
-	filePath, fileDir := getKeyPath(key)
+	filePath, _ := getKeyPath(key)
 
 	fullFilePath := filepath.Join(v.storagePath, filePath)
 
@@ -106,15 +106,8 @@ func (v *Vault) DeleteKey(key []byte) error {
 		return fmt.Errorf("failed to delete file: %w", err)
 	}
 
-	files, err := os.ReadDir(filepath.Join(v.storagePath, fileDir))
-	if err != nil {
-		return fmt.Errorf("failed to read directory: %w", err)
-	}
-
-	if len(files) == 0 {
-		if err := os.Remove(filepath.Join(v.storagePath, fileDir)); err != nil {
-			return fmt.Errorf("failed to delete directory: %w", err)
-		}
+	if err := cleanupStorage(v.storagePath); err != nil {
+		return fmt.Errorf("failed to cleanup storage: %w", err)
 	}
 
 	return nil
