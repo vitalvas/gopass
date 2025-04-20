@@ -12,7 +12,14 @@ var deleteCmd = &cli.Command{
 	Aliases:   []string{"del", "rm"},
 	Usage:     "Delete a stored key",
 	ArgsUsage: "<key name>",
-	Before:    loader,
+	Flags: []cli.Flag{
+		&cli.BoolFlag{
+			Name:    "force",
+			Aliases: []string{"f"},
+			Usage:   "Force delete key",
+		},
+	},
+	Before: loader,
 	Action: func(c *cli.Context) error {
 		if c.Args().Len() != 1 {
 			return fmt.Errorf("invalid number of arguments")
@@ -23,13 +30,18 @@ var deleteCmd = &cli.Command{
 			return err
 		}
 
-		fmt.Printf("Are you sure you would like to delete %s? [y/N] ", keyName)
+		force := c.Bool("force")
 		var confirm string
-		if _, err := fmt.Scanln(&confirm); err != nil {
-			return fmt.Errorf("failed to read confirmation: %w", err)
+
+		if !force {
+			fmt.Printf("Are you sure you would like to delete %s? [y/N] ", keyName)
+
+			if _, err := fmt.Scanln(&confirm); err != nil {
+				return fmt.Errorf("failed to read confirmation: %w", err)
+			}
 		}
 
-		if confirm == "y" {
+		if confirm == "y" || force {
 			encKeyName, err := encrypt.EncryptKey(keyName)
 			if err != nil {
 				return fmt.Errorf("failed to encrypt key name: %w", err)
@@ -39,7 +51,7 @@ var deleteCmd = &cli.Command{
 				return fmt.Errorf("failed to delete key: %w", err)
 			}
 
-			fmt.Println("Key deleted")
+			fmt.Printf("Key deleted: %s", keyName)
 		} else {
 			fmt.Println("Deletion aborted")
 		}
