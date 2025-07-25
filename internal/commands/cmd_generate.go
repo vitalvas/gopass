@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/vitalvas/gopass/pkg/password"
-	"github.com/vitalvas/gopass/pkg/vault"
+	"github.com/vitalvas/gopass/internal/password"
+	"github.com/vitalvas/gopass/internal/vault"
 )
 
 var generateForce bool

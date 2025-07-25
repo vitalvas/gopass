@@ -7,9 +7,9 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/vitalvas/gopass/pkg/encryptor"
-	"github.com/vitalvas/gopass/pkg/vault"
-	"github.com/vitalvas/gopass/pkg/vault/filevault"
+	"github.com/vitalvas/gopass/internal/encryptor"
+	"github.com/vitalvas/gopass/internal/vault"
+	"github.com/vitalvas/gopass/internal/vault/filevault"
 )
 
 var (

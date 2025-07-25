@@ -2,8 +2,8 @@ package commands
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/vitalvas/gopass/internal/vault"
 	"github.com/vitalvas/gopass/internal/version"
-	"github.com/vitalvas/gopass/pkg/vault"
 )
 
 var vaultName string

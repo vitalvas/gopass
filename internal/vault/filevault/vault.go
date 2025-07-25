@@ -1,7 +1,7 @@
 package filevault
 
 import (
-	"github.com/vitalvas/gopass/pkg/vault"
+	"github.com/vitalvas/gopass/internal/vault"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.

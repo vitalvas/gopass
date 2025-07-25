@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/vitalvas/gopass/pkg/vault"
+	"github.com/vitalvas/gopass/internal/vault"
 )
 
 var getCmd = &cobra.Command{
