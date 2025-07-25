@@ -5,23 +5,17 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/urfave/cli/v2"
+	"github.com/spf13/cobra"
 )
 
-var listCmd = &cli.Command{
-	Name:    "list",
+var listPrefix string
+
+var listCmd = &cobra.Command{
+	Use:     "list",
 	Aliases: []string{"ls"},
-	Usage:   "List of stored keys",
-	Flags: []cli.Flag{
-		&cli.StringFlag{
-			Name:    "prefix",
-			Aliases: []string{"p"},
-			Usage:   "Filter keys by prefix",
-		},
-	},
-	Before: loader,
-	Action: func(c *cli.Context) error {
-		prefix := c.String("prefix")
+	Short:   "List of stored keys",
+	PreRunE: loader,
+	RunE: func(_ *cobra.Command, _ []string) error {
 
 		encKeys, err := store.ListKeys()
 		if err != nil {
@@ -42,11 +36,15 @@ var listCmd = &cli.Command{
 		sort.Strings(names)
 
 		for _, row := range names {
-			if strings.HasPrefix(row, prefix) {
+			if strings.HasPrefix(row, listPrefix) {
 				fmt.Println(row)
 			}
 		}
 
 		return nil
 	},
+}
+
+func init() {
+	listCmd.Flags().StringVarP(&listPrefix, "prefix", "p", "", "Filter keys by prefix")
 }

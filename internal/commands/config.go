@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"os"
 
-	"github.com/urfave/cli/v2"
+	"github.com/spf13/cobra"
 	"github.com/vitalvas/gopass/pkg/encryptor"
 	"github.com/vitalvas/gopass/pkg/vault"
 	"github.com/vitalvas/gopass/pkg/vault/filevault"
@@ -28,8 +28,8 @@ func init() {
 	}()
 }
 
-func configLoader(c *cli.Context) error {
-	configPath := fmt.Sprintf("%s/.gopass/%s.json", os.Getenv("HOME"), c.String("vault"))
+func configLoader(_ *cobra.Command, _ []string) error {
+	configPath := fmt.Sprintf("%s/.gopass/%s.json", os.Getenv("HOME"), vaultName)
 
 	configFile, err := os.Open(configPath)
 	if err != nil {
@@ -41,7 +41,7 @@ func configLoader(c *cli.Context) error {
 	return json.NewDecoder(configFile).Decode(&vaultConfig)
 }
 
-func vaultLoader(_ *cli.Context) error {
+func vaultLoader(_ *cobra.Command, _ []string) error {
 	parsed, err := url.Parse(vaultConfig.Address)
 	if err != nil {
 		return fmt.Errorf("failed to parse vault address: %w", err)
@@ -64,7 +64,7 @@ func vaultLoader(_ *cli.Context) error {
 	return nil
 }
 
-func encryptLoader(_ *cli.Context) error {
+func encryptLoader(_ *cobra.Command, _ []string) error {
 	var err error
 	encrypt, err = encryptor.NewEncryptor(vaultConfig.EncryptionKey)
 	if err != nil {
@@ -74,14 +74,14 @@ func encryptLoader(_ *cli.Context) error {
 	return nil
 }
 
-func loader(c *cli.Context) error {
-	if err := configLoader(c); err != nil {
+func loader(cmd *cobra.Command, args []string) error {
+	if err := configLoader(cmd, args); err != nil {
 		return err
 	}
 
-	if err := encryptLoader(c); err != nil {
+	if err := encryptLoader(cmd, args); err != nil {
 		return err
 	}
 
-	return vaultLoader(c)
+	return vaultLoader(cmd, args)
 }

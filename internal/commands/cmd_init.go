@@ -10,32 +10,23 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/urfave/cli/v2"
+	"github.com/spf13/cobra"
 	"github.com/vitalvas/gopass/pkg/encryptor"
 	"github.com/vitalvas/gopass/pkg/password"
 	"github.com/vitalvas/gopass/pkg/vault"
 	"github.com/vitalvas/gopass/pkg/vault/filevault"
 )
 
-var initCmd = &cli.Command{
-	Name:  "init",
-	Usage: "Initialize a new password store",
-	Flags: []cli.Flag{
-		&cli.StringFlag{
-			Name:       "address",
-			Usage:      "Store address",
-			Value:      fmt.Sprintf("file://%s/.gopass/{{vault}}", os.Getenv("HOME")),
-			Required:   true,
-			HasBeenSet: true,
-		},
-		&cli.StringFlag{
-			Name:    "encryption-key",
-			Usage:   "Encryption key for key (generated if not set)",
-			EnvVars: []string{"GOPASS_ENCRYPTION_KEY"},
-		},
-	},
-	Action: func(c *cli.Context) error {
-		parsed, err := url.Parse(c.String("address"))
+var (
+	initAddress       string
+	initEncryptionKey string
+)
+
+var initCmd = &cobra.Command{
+	Use:   "init",
+	Short: "Initialize a new password store",
+	RunE: func(_ *cobra.Command, _ []string) error {
+		parsed, err := url.Parse(initAddress)
 		if err != nil {
 			return fmt.Errorf("failed to parse store address: %w", err)
 		}
@@ -44,9 +35,9 @@ var initCmd = &cli.Command{
 			return fmt.Errorf("unsupported scheme: %s", parsed.Scheme)
 		}
 
-		parsed.Path = strings.ReplaceAll(parsed.Path, "{{vault}}", c.String("vault"))
+		parsed.Path = strings.ReplaceAll(parsed.Path, "{{vault}}", vaultName)
 
-		vaultConfigPath := fmt.Sprintf("%s/.gopass/%s.json", os.Getenv("HOME"), c.String("vault"))
+		vaultConfigPath := fmt.Sprintf("%s/.gopass/%s.json", os.Getenv("HOME"), vaultName)
 
 		if _, err := os.Stat(parsed.Path); err == nil {
 			return fmt.Errorf("vault already exists: %s", parsed.Path)
@@ -61,9 +52,9 @@ var initCmd = &cli.Command{
 		}
 
 		vaultConfig := vault.Config{
-			Name:          c.String("vault"),
+			Name:          vaultName,
 			Address:       parsed.String(),
-			EncryptionKey: c.String("encryption-key"),
+			EncryptionKey: initEncryptionKey,
 		}
 
 		if len(vaultConfig.EncryptionKey) <= 8 {
@@ -116,4 +107,10 @@ var initCmd = &cli.Command{
 
 		return nil
 	},
+}
+
+func init() {
+	initCmd.Flags().StringVar(&initAddress, "address", fmt.Sprintf("file://%s/.gopass/{{vault}}", os.Getenv("HOME")), "Store address")
+	initCmd.Flags().StringVar(&initEncryptionKey, "encryption-key", "", "Encryption key for key (generated if not set)")
+	initCmd.MarkFlagRequired("address")
 }

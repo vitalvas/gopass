@@ -3,21 +3,17 @@ package commands
 import (
 	"fmt"
 
-	"github.com/urfave/cli/v2"
+	"github.com/spf13/cobra"
 	"github.com/vitalvas/gopass/pkg/vault"
 )
 
-var getCmd = &cli.Command{
-	Name:      "get",
-	Usage:     "Get a stored key",
-	ArgsUsage: "<key name>",
-	Before:    loader,
-	Action: func(c *cli.Context) error {
-		if c.Args().Len() != 1 {
-			return fmt.Errorf("invalid number of arguments")
-		}
-
-		keyName := c.Args().First()
+var getCmd = &cobra.Command{
+	Use:     "get <key name>",
+	Short:   "Get a stored key",
+	Args:    cobra.ExactArgs(1),
+	PreRunE: loader,
+	RunE: func(_ *cobra.Command, args []string) error {
+		keyName := args[0]
 		if err := vault.ValidateKeyName(keyName); err != nil {
 			return err
 		}

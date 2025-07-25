@@ -1,41 +1,34 @@
 package commands
 
 import (
-	"os"
-
-	"github.com/urfave/cli/v2"
+	"github.com/spf13/cobra"
 	"github.com/vitalvas/gopass/internal/version"
 	"github.com/vitalvas/gopass/pkg/vault"
 )
 
-func Execute() error {
-	app := &cli.App{
-		Name:                 "gopass",
-		Usage:                "Simple password manager",
-		Version:              version.Version(),
-		EnableBashCompletion: true,
-		HideHelpCommand:      true,
-		Flags: []cli.Flag{
-			&cli.StringFlag{
-				Name:    "vault",
-				Usage:   "Vault name",
-				EnvVars: []string{"GOPASS_VAULT"},
-				Value:   "default",
-			},
-		},
-		Commands: []*cli.Command{
-			initCmd,
-			pwgenCmd,
-			generateCmd,
-			listCmd,
-			getCmd,
-			moveCmd,
-			deleteCmd,
-		},
-		Before: func(c *cli.Context) error {
-			return vault.ValidateName(c.String("vault"))
-		},
-	}
+var vaultName string
 
-	return app.Run(os.Args)
+var rootCmd = &cobra.Command{
+	Use:     "gopass",
+	Short:   "Simple password manager",
+	Version: version.Version(),
+	PersistentPreRunE: func(_ *cobra.Command, _ []string) error {
+		return vault.ValidateName(vaultName)
+	},
+}
+
+func Execute() error {
+	return rootCmd.Execute()
+}
+
+func init() {
+	rootCmd.PersistentFlags().StringVar(&vaultName, "vault", "default", "Vault name")
+
+	rootCmd.AddCommand(initCmd)
+	rootCmd.AddCommand(pwgenCmd)
+	rootCmd.AddCommand(generateCmd)
+	rootCmd.AddCommand(listCmd)
+	rootCmd.AddCommand(getCmd)
+	rootCmd.AddCommand(moveCmd)
+	rootCmd.AddCommand(deleteCmd)
 }

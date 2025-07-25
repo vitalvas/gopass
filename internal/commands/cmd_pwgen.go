@@ -3,54 +3,30 @@ package commands
 import (
 	"fmt"
 
-	"github.com/urfave/cli/v2"
+	"github.com/spf13/cobra"
 	"github.com/vitalvas/gopass/pkg/password"
 )
 
-var pwgenCmd = &cli.Command{
-	Name:  "pwgen",
-	Usage: "Generate a random password",
-	Flags: []cli.Flag{
-		&cli.IntFlag{
-			Name:    "length",
-			Aliases: []string{"l"},
-			Usage:   "Password length",
-			Value:   password.DefaultPasswordLength,
-		},
-		&cli.IntFlag{
-			Name:  "special",
-			Usage: "Number of special characters",
-			Value: password.DefaultSpecialCharsLength,
-		},
-		&cli.IntFlag{
-			Name:  "numbers",
-			Usage: "Number of numbers",
-			Value: password.DefaultNumbersLength,
-		},
-		&cli.IntFlag{
-			Name:    "variants",
-			Aliases: []string{"v"},
-			Usage:   "Number of variants",
-			Value:   5,
-		},
-		&cli.BoolFlag{
-			Name:    "string",
-			Aliases: []string{"s"},
-			Usage:   "String only characters",
-			Value:   false,
-		},
-	},
-	Action: func(c *cli.Context) error {
-		variants := c.Int("variants")
+var (
+	pwgenLength   int
+	pwgenSpecial  int
+	pwgenNumbers  int
+	pwgenVariants int
+	pwgenString   bool
+)
 
-		for i := 0; i < variants; i++ {
+var pwgenCmd = &cobra.Command{
+	Use:   "pwgen",
+	Short: "Generate a random password",
+	RunE: func(_ *cobra.Command, _ []string) error {
+		for i := 0; i < pwgenVariants; i++ {
 			var (
-				length  = c.Int("length")
-				special = c.Int("special")
-				numbers = c.Int("numbers")
+				length  = pwgenLength
+				special = pwgenSpecial
+				numbers = pwgenNumbers
 			)
 
-			if c.Bool("string") {
+			if pwgenString {
 				special = 0
 				numbers = 0
 			}
@@ -60,4 +36,12 @@ var pwgenCmd = &cli.Command{
 		}
 		return nil
 	},
+}
+
+func init() {
+	pwgenCmd.Flags().IntVarP(&pwgenLength, "length", "l", password.DefaultPasswordLength, "Password length")
+	pwgenCmd.Flags().IntVar(&pwgenSpecial, "special", password.DefaultSpecialCharsLength, "Number of special characters")
+	pwgenCmd.Flags().IntVar(&pwgenNumbers, "numbers", password.DefaultNumbersLength, "Number of numbers")
+	pwgenCmd.Flags().IntVarP(&pwgenVariants, "variants", "v", 5, "Number of variants")
+	pwgenCmd.Flags().BoolVarP(&pwgenString, "string", "s", false, "String only characters")
 }

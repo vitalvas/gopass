@@ -3,37 +3,27 @@ package commands
 import (
 	"fmt"
 
-	"github.com/urfave/cli/v2"
+	"github.com/spf13/cobra"
 	"github.com/vitalvas/gopass/pkg/vault"
 )
 
-var deleteCmd = &cli.Command{
-	Name:      "delete",
-	Aliases:   []string{"del", "rm"},
-	Usage:     "Delete a stored key",
-	ArgsUsage: "<key name>",
-	Flags: []cli.Flag{
-		&cli.BoolFlag{
-			Name:    "force",
-			Aliases: []string{"f"},
-			Usage:   "Force delete key",
-		},
-	},
-	Before: loader,
-	Action: func(c *cli.Context) error {
-		if c.Args().Len() != 1 {
-			return fmt.Errorf("invalid number of arguments")
-		}
+var deleteForce bool
 
-		keyName := c.Args().First()
+var deleteCmd = &cobra.Command{
+	Use:     "delete <key name>",
+	Aliases: []string{"del", "rm"},
+	Short:   "Delete a stored key",
+	Args:    cobra.ExactArgs(1),
+	PreRunE: loader,
+	RunE: func(_ *cobra.Command, args []string) error {
+		keyName := args[0]
 		if err := vault.ValidateKeyName(keyName); err != nil {
 			return err
 		}
 
-		force := c.Bool("force")
 		var confirm string
 
-		if !force {
+		if !deleteForce {
 			fmt.Printf("Are you sure you would like to delete %s? [y/N] ", keyName)
 
 			if _, err := fmt.Scanln(&confirm); err != nil {
@@ -41,7 +31,7 @@ var deleteCmd = &cli.Command{
 			}
 		}
 
-		if confirm == "y" || force {
+		if confirm == "y" || deleteForce {
 			encKeyName, err := encrypt.EncryptKey(keyName)
 			if err != nil {
 				return fmt.Errorf("failed to encrypt key name: %w", err)
@@ -58,4 +48,8 @@ var deleteCmd = &cli.Command{
 
 		return nil
 	},
+}
+
+func init() {
+	deleteCmd.Flags().BoolVarP(&deleteForce, "force", "f", false, "Force delete key")
 }

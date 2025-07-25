@@ -3,34 +3,25 @@ package commands
 import (
 	"fmt"
 
-	"github.com/urfave/cli/v2"
+	"github.com/spf13/cobra"
 	"github.com/vitalvas/gopass/pkg/vault"
 )
 
-var moveCmd = &cli.Command{
-	Name:      "move",
-	Aliases:   []string{"mv"},
-	Usage:     "Move a stored key",
-	ArgsUsage: "<key name> <new key name>",
-	Flags: []cli.Flag{
-		&cli.BoolFlag{
-			Name:    "force",
-			Aliases: []string{"f"},
-			Usage:   "Force overwrite existing key",
-		},
-	},
-	Before: loader,
-	Action: func(c *cli.Context) error {
-		if c.Args().Len() != 2 {
-			return fmt.Errorf("invalid number of arguments")
-		}
+var moveForce bool
 
-		keyName := c.Args().First()
+var moveCmd = &cobra.Command{
+	Use:     "move <key name> <new key name>",
+	Aliases: []string{"mv"},
+	Short:   "Move a stored key",
+	Args:    cobra.ExactArgs(2),
+	PreRunE: loader,
+	RunE: func(_ *cobra.Command, args []string) error {
+		keyName := args[0]
 		if err := vault.ValidateKeyName(keyName); err != nil {
 			return err
 		}
 
-		newKeyName := c.Args().Get(1)
+		newKeyName := args[1]
 		if err := vault.ValidateKeyName(newKeyName); err != nil {
 			return err
 		}
@@ -61,7 +52,7 @@ var moveCmd = &cli.Command{
 		}
 
 		if _, err = store.GetKey(encNewKeyName); err == nil {
-			if !c.Bool("force") {
+			if !moveForce {
 				return fmt.Errorf("new key already exists")
 			}
 
@@ -82,4 +73,8 @@ var moveCmd = &cli.Command{
 
 		return nil
 	},
+}
+
+func init() {
+	moveCmd.Flags().BoolVarP(&moveForce, "force", "f", false, "Force overwrite existing key")
 }
