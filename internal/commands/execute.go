@@ -29,6 +29,11 @@ func init() {
 	rootCmd.AddCommand(generateCmd)
 	rootCmd.AddCommand(listCmd)
 	rootCmd.AddCommand(getCmd)
+	rootCmd.AddCommand(insertCmd)
+	rootCmd.AddCommand(editCmd)
 	rootCmd.AddCommand(moveCmd)
+	rootCmd.AddCommand(copyCmd)
 	rootCmd.AddCommand(deleteCmd)
+	rootCmd.AddCommand(findCmd)
+	rootCmd.AddCommand(grepCmd)
 }
