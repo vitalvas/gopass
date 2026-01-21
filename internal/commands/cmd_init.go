@@ -112,5 +112,4 @@ var initCmd = &cobra.Command{
 func init() {
 	initCmd.Flags().StringVar(&initAddress, "address", fmt.Sprintf("file://%s/.gopass/{{vault}}", os.Getenv("HOME")), "Store address")
 	initCmd.Flags().StringVar(&initEncryptionKey, "encryption-key", "", "Encryption key for key (generated if not set)")
-	initCmd.MarkFlagRequired("address")
 }

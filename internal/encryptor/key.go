@@ -2,8 +2,6 @@ package encryptor
 
 import (
 	"errors"
-
-	"golang.org/x/crypto/chacha20poly1305"
 )
 
 func (e *Encryptor) EncryptKey(text string) ([]byte, error) {
@@ -15,7 +13,7 @@ func (e *Encryptor) EncryptKey(text string) ([]byte, error) {
 		return nil, errors.New("empty text")
 	}
 
-	nonce := make([]byte, chacha20poly1305.NonceSizeX)
+	nonce := make([]byte, nonceSize)
 
 	ciphertext := e.keyAead.Seal(nil, nonce, []byte(text), nil)
 
@@ -27,7 +25,7 @@ func (e *Encryptor) DecryptKey(text []byte) (string, error) {
 		return "", errors.New("no key encryption key")
 	}
 
-	nonce := make([]byte, chacha20poly1305.NonceSizeX)
+	nonce := make([]byte, nonceSize)
 
 	plaintext, err := e.keyAead.Open(nil, nonce, text, nil)
 	if err != nil {

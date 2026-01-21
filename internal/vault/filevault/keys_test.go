@@ -61,19 +61,19 @@ func TestListKeys(t *testing.T) {
 		}
 	})
 
-	t.Run("invalid hex filename", func(t *testing.T) {
+	t.Run("invalid base32 filename", func(t *testing.T) {
 		storagePath, err := os.MkdirTemp("", "gopass")
 		require.NoError(t, err)
 		defer os.RemoveAll(storagePath)
 
 		v := New(storagePath)
 
-		// Create invalid hex file manually
-		invalidDir := filepath.Join(storagePath, "aa", "bb")
+		// Create invalid base32 file manually
+		invalidDir := filepath.Join(storagePath, "AA", "BB")
 		err = os.MkdirAll(invalidDir, 0700)
 		require.NoError(t, err)
 
-		invalidFile := filepath.Join(invalidDir, "invalid_hex.txt")
+		invalidFile := filepath.Join(invalidDir, "invalid_base32.txt")
 		err = os.WriteFile(invalidFile, []byte("test"), 0600)
 		require.NoError(t, err)
 

@@ -2,7 +2,6 @@ package filevault
 
 import (
 	"encoding/base64"
-	"encoding/hex"
 	"errors"
 	"fmt"
 	"os"
@@ -21,7 +20,7 @@ func (v *Vault) ListKeys() ([][]byte, error) {
 	for _, row := range fileList {
 		name := strings.TrimSuffix(filepath.Base(row), fileExtension)
 
-		decoded, err := hex.DecodeString(name)
+		decoded, err := base32Encoding.DecodeString(strings.ToUpper(name))
 		if err != nil {
 			return nil, fmt.Errorf("failed to decode key: %w", err)
 		}

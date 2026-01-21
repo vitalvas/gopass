@@ -7,7 +7,7 @@ import (
 
 var (
 	validateNameRegex    = regexp.MustCompile("^([0-9a-zA-Z-_.]{3,32})$")
-	validateKeyNameRegex = regexp.MustCompile("^([0-9a-zA-Z-_./]{3,128})$")
+	validateKeyNameRegex = regexp.MustCompile("^/[0-9a-zA-Z-_.]+(/[0-9a-zA-Z-_.]+)*$")
 )
 
 func ValidateName(name string) error {
@@ -19,8 +19,12 @@ func ValidateName(name string) error {
 }
 
 func ValidateKeyName(name string) error {
+	if len(name) < 3 || len(name) > 128 {
+		return fmt.Errorf("invalid key name length: %s", name)
+	}
+
 	if !validateKeyNameRegex.MatchString(name) {
-		return fmt.Errorf("invalid key name: %s", name)
+		return fmt.Errorf("invalid key name: %s (must start with '/' and look like a filepath)", name)
 	}
 
 	return nil

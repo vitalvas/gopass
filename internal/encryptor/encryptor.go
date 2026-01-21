@@ -1,11 +1,11 @@
 package encryptor
 
 import (
+	"crypto/aes"
 	"crypto/cipher"
 	"errors"
 
 	"golang.org/x/crypto/blake2b"
-	"golang.org/x/crypto/chacha20poly1305"
 )
 
 type Encryptor struct {
@@ -21,7 +21,12 @@ func NewEncryptor(keySecret string) (*Encryptor, error) {
 
 	keyHash := blake2b.Sum256(keySecretBytes)
 
-	keyAead, err := chacha20poly1305.NewX(keyHash[:chacha20poly1305.KeySize])
+	block, err := aes.NewCipher(keyHash[:])
+	if err != nil {
+		return nil, err
+	}
+
+	keyAead, err := cipher.NewGCM(block)
 	if err != nil {
 		return nil, err
 	}

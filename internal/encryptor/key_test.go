@@ -26,8 +26,8 @@ func TestEncryptKey(t *testing.T) {
 		err   bool
 	}{
 		{"empty", "", "", true},
-		{"short", "short", "HcmRFIQqnnjwcpLz9YU_YW2L4rhC", false},
-		{"long", "one/two/there/pass/name", "Ac-bSYT9-W_A88ZmFmgMI5uIXlrY4fG0gUeEZtuwi82VZBEWlV9D", false},
+		{"short", "short", "kXnNIi5w3UsUFnNERvZ_yPfrgd7K", false},
+		{"long", "one/two/there/pass/name", "jX_Hfy44pXYrWztIfvPASZuUFUlnx6j7uWY8gl3-opxJ5jZhkFLT", false},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			row, err := enc.EncryptKey(tc.text)
@@ -68,8 +68,8 @@ func TestDecryptKey(t *testing.T) {
 		err   bool
 	}{
 		{"empty", "", "", true},
-		{"short", "HcmRFIQqnnjwcpLz9YU_YW2L4rhC", "short", false},
-		{"long", "Ac-bSYT9-W_A88ZmFmgMI5uIXlrY4fG0gUeEZtuwi82VZBEWlV9D", "one/two/there/pass/name", false},
+		{"short", "kXnNIi5w3UsUFnNERvZ_yPfrgd7K", "short", false},
+		{"long", "jX_Hfy44pXYrWztIfvPASZuUFUlnx6j7uWY8gl3-opxJ5jZhkFLT", "one/two/there/pass/name", false},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			decoded, err := base64.RawURLEncoding.DecodeString(tc.text)
