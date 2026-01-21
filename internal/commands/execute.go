@@ -36,4 +36,7 @@ func init() {
 	rootCmd.AddCommand(deleteCmd)
 	rootCmd.AddCommand(findCmd)
 	rootCmd.AddCommand(grepCmd)
+	rootCmd.AddCommand(otpCmd)
+	rootCmd.AddCommand(passkeyCmd)
+	rootCmd.AddCommand(gpgCmd)
 }

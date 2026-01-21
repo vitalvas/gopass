@@ -3,6 +3,7 @@ package commands
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 
@@ -10,7 +11,10 @@ import (
 	"github.com/vitalvas/gopass/internal/vault"
 )
 
-var insertForce bool
+var (
+	insertForce     bool
+	insertMultiline bool
+)
 
 var insertCmd = &cobra.Command{
 	Use:     "insert <key name>",
@@ -35,16 +39,29 @@ var insertCmd = &cobra.Command{
 			}
 		}
 
-		fmt.Printf("Enter password for %s: ", keyName)
+		var password string
 
-		reader := bufio.NewReader(os.Stdin)
-		password, err := reader.ReadString('\n')
-		if err != nil {
-			return fmt.Errorf("failed to read password: %w", err)
+		if insertMultiline {
+			fmt.Printf("Enter contents for %s (Ctrl+D to finish):\n", keyName)
+
+			data, err := io.ReadAll(os.Stdin)
+			if err != nil {
+				return fmt.Errorf("failed to read input: %w", err)
+			}
+
+			password = strings.TrimSuffix(string(data), "\n")
+		} else {
+			fmt.Printf("Enter password for %s: ", keyName)
+
+			reader := bufio.NewReader(os.Stdin)
+			line, err := reader.ReadString('\n')
+			if err != nil && err != io.EOF {
+				return fmt.Errorf("failed to read password: %w", err)
+			}
+
+			password = strings.TrimSuffix(line, "\n")
+			password = strings.TrimSuffix(password, "\r")
 		}
-
-		password = strings.TrimSuffix(password, "\n")
-		password = strings.TrimSuffix(password, "\r")
 
 		if password == "" {
 			return fmt.Errorf("password cannot be empty")
@@ -76,4 +93,5 @@ var insertCmd = &cobra.Command{
 
 func init() {
 	insertCmd.Flags().BoolVarP(&insertForce, "force", "f", false, "Force overwrite existing key")
+	insertCmd.Flags().BoolVarP(&insertMultiline, "multiline", "m", false, "Read multi-line input until Ctrl+D")
 }
