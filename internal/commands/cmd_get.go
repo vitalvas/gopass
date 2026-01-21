@@ -2,10 +2,14 @@ package commands
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/vitalvas/gopass/internal/qrcode"
 	"github.com/vitalvas/gopass/internal/vault"
 )
+
+var getQRCode bool
 
 var getCmd = &cobra.Command{
 	Use:     "get <key name>",
@@ -38,8 +42,16 @@ var getCmd = &cobra.Command{
 			return fmt.Errorf("failed to unmarshal payload: %w", err)
 		}
 
+		if getQRCode {
+			return qrcode.Print(os.Stdout, payload.Data)
+		}
+
 		fmt.Println(payload.Data)
 
 		return nil
 	},
+}
+
+func init() {
+	getCmd.Flags().BoolVarP(&getQRCode, "qrcode", "q", false, "Display as QR code")
 }

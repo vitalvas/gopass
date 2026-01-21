@@ -39,4 +39,5 @@ func init() {
 	rootCmd.AddCommand(otpCmd)
 	rootCmd.AddCommand(passkeyCmd)
 	rootCmd.AddCommand(gpgCmd)
+	rootCmd.AddCommand(rotateCmd)
 }

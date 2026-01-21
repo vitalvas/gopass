@@ -9,6 +9,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/vitalvas/gopass/internal/otp"
+	"github.com/vitalvas/gopass/internal/qrcode"
 	"github.com/vitalvas/gopass/internal/vault"
 )
 
@@ -79,6 +80,7 @@ var otpCodeCmd = &cobra.Command{
 
 var (
 	otpInsertForce bool
+	otpURIQRCode   bool
 )
 
 var otpInsertCmd = &cobra.Command{
@@ -248,8 +250,14 @@ var otpURICmd = &cobra.Command{
 			period = otp.DefaultPeriod
 		}
 
-		fmt.Printf("otpauth://totp/%s?secret=%s&digits=%d&period=%d\n",
+		uri := fmt.Sprintf("otpauth://totp/%s?secret=%s&digits=%d&period=%d",
 			keyName, payload.OTP.Secret, digits, period)
+
+		if otpURIQRCode {
+			return qrcode.Print(os.Stdout, uri)
+		}
+
+		fmt.Println(uri)
 
 		return nil
 	},
@@ -257,6 +265,7 @@ var otpURICmd = &cobra.Command{
 
 func init() {
 	otpInsertCmd.Flags().BoolVarP(&otpInsertForce, "force", "f", false, "Force overwrite existing OTP")
+	otpURICmd.Flags().BoolVarP(&otpURIQRCode, "qrcode", "q", false, "Display as QR code")
 
 	otpCmd.AddCommand(otpCodeCmd)
 	otpCmd.AddCommand(otpInsertCmd)
