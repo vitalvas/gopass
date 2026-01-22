@@ -32,12 +32,9 @@ var deleteCmd = &cobra.Command{
 		}
 
 		if confirm == "y" || deleteForce {
-			encKeyName, err := encrypt.EncryptKey(keyName)
-			if err != nil {
-				return fmt.Errorf("failed to encrypt key name: %w", err)
-			}
+			keyID := encrypt.KeyID(keyName)
 
-			if err := store.DeleteKey(encKeyName); err != nil {
+			if err := store.DeleteKey(keyID); err != nil {
 				return fmt.Errorf("failed to delete key: %w", err)
 			}
 

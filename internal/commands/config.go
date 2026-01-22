@@ -66,7 +66,8 @@ func vaultLoader(_ *cobra.Command, _ []string) error {
 
 func encryptLoader(_ *cobra.Command, _ []string) error {
 	var err error
-	encrypt, err = encryptor.NewEncryptor(vaultConfig.EncryptionKey)
+
+	encrypt, err = encryptor.NewEncryptor(vaultConfig.Keys)
 	if err != nil {
 		return fmt.Errorf("failed to create encryptor: %w", err)
 	}

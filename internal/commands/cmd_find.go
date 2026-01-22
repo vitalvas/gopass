@@ -17,14 +17,19 @@ var findCmd = &cobra.Command{
 	RunE: func(_ *cobra.Command, args []string) error {
 		pattern := strings.ToLower(args[0])
 
-		encKeys, err := store.ListKeys()
+		keyIDs, err := store.ListKeys()
 		if err != nil {
 			return err
 		}
 
-		names := make([]string, 0, len(encKeys))
+		names := make([]string, 0, len(keyIDs))
 
-		for _, encKey := range encKeys {
+		for _, keyID := range keyIDs {
+			encKey, _, err := store.GetKey(keyID)
+			if err != nil {
+				return fmt.Errorf("failed to get key: %w", err)
+			}
+
 			name, err := encrypt.DecryptKey(encKey)
 			if err != nil {
 				return fmt.Errorf("failed to decrypt key: %w", err)

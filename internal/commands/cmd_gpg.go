@@ -36,12 +36,9 @@ var gpgExportCmd = &cobra.Command{
 			return err
 		}
 
-		encKeyName, err := encrypt.EncryptKey(vaultKey)
-		if err != nil {
-			return fmt.Errorf("failed to encrypt key name: %w", err)
-		}
+		keyID := encrypt.KeyID(vaultKey)
 
-		if _, err := store.GetKey(encKeyName); err == nil {
+		if _, _, err := store.GetKey(keyID); err == nil {
 			if !gpgForce {
 				return fmt.Errorf("key already exists: %s (use --force to overwrite)", vaultKey)
 			}
@@ -83,12 +80,17 @@ var gpgExportCmd = &cobra.Command{
 			return err
 		}
 
+		encKeyName, err := encrypt.EncryptKey(vaultKey)
+		if err != nil {
+			return fmt.Errorf("failed to encrypt key name: %w", err)
+		}
+
 		encValue, err := encrypt.EncryptValue(vaultKey, data)
 		if err != nil {
 			return fmt.Errorf("failed to encrypt value: %w", err)
 		}
 
-		if err := store.SetKey(encKeyName, encValue); err != nil {
+		if err := store.SetKey(keyID, encKeyName, encValue); err != nil {
 			return fmt.Errorf("failed to store key: %w", err)
 		}
 
@@ -118,12 +120,9 @@ var gpgImportCmd = &cobra.Command{
 			return err
 		}
 
-		encKeyName, err := encrypt.EncryptKey(vaultKey)
-		if err != nil {
-			return fmt.Errorf("failed to encrypt key name: %w", err)
-		}
+		keyID := encrypt.KeyID(vaultKey)
 
-		encValue, err := store.GetKey(encKeyName)
+		_, encValue, err := store.GetKey(keyID)
 		if err != nil {
 			return fmt.Errorf("failed to get key: %w", err)
 		}
@@ -176,12 +175,9 @@ var gpgShowCmd = &cobra.Command{
 			return err
 		}
 
-		encKeyName, err := encrypt.EncryptKey(vaultKey)
-		if err != nil {
-			return fmt.Errorf("failed to encrypt key name: %w", err)
-		}
+		keyID := encrypt.KeyID(vaultKey)
 
-		encValue, err := store.GetKey(encKeyName)
+		_, encValue, err := store.GetKey(keyID)
 		if err != nil {
 			return fmt.Errorf("failed to get key: %w", err)
 		}
@@ -349,12 +345,9 @@ var gpgAgentCmd = &cobra.Command{
 				return err
 			}
 
-			encKeyName, err := encrypt.EncryptKey(vaultKey)
-			if err != nil {
-				return fmt.Errorf("failed to encrypt key name: %w", err)
-			}
+			keyID := encrypt.KeyID(vaultKey)
 
-			encValue, err := store.GetKey(encKeyName)
+			_, encValue, err := store.GetKey(keyID)
 			if err != nil {
 				return fmt.Errorf("failed to get key %s: %w", vaultKey, err)
 			}
@@ -612,12 +605,9 @@ var gpgVerifyCmd = &cobra.Command{
 }
 
 func loadGPGKeyFromVault(vaultKey string) (*vault.GPGKey, error) {
-	encKeyName, err := encrypt.EncryptKey(vaultKey)
-	if err != nil {
-		return nil, fmt.Errorf("failed to encrypt key name: %w", err)
-	}
+	keyID := encrypt.KeyID(vaultKey)
 
-	encValue, err := store.GetKey(encKeyName)
+	_, encValue, err := store.GetKey(keyID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get key: %w", err)
 	}

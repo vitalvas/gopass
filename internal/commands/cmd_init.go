@@ -12,15 +12,11 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/vitalvas/gopass/internal/encryptor"
-	"github.com/vitalvas/gopass/internal/password"
 	"github.com/vitalvas/gopass/internal/vault"
 	"github.com/vitalvas/gopass/internal/vault/filevault"
 )
 
-var (
-	initAddress       string
-	initEncryptionKey string
-)
+var initAddress string
 
 var initCmd = &cobra.Command{
 	Use:   "init",
@@ -51,14 +47,15 @@ var initCmd = &cobra.Command{
 			return fmt.Errorf("failed to create vault directory: %w", err)
 		}
 
-		vaultConfig := vault.Config{
-			Name:          vaultName,
-			Address:       parsed.String(),
-			EncryptionKey: initEncryptionKey,
+		keys, err := encryptor.GenerateKeys()
+		if err != nil {
+			return fmt.Errorf("failed to generate encryption keys: %w", err)
 		}
 
-		if len(vaultConfig.EncryptionKey) <= 8 {
-			vaultConfig.EncryptionKey = password.Generate(32, 0, 8)
+		vaultConfig := vault.Config{
+			Name:    vaultName,
+			Address: parsed.String(),
+			Keys:    keys,
 		}
 
 		configDir := strings.TrimRight(vaultConfigPath, filepath.Base(vaultConfigPath))
@@ -83,14 +80,14 @@ var initCmd = &cobra.Command{
 			return fmt.Errorf("failed to write vault config: %w", err)
 		}
 
-		enc, err := encryptor.NewEncryptor(vaultConfig.EncryptionKey)
+		enc, err := encryptor.NewEncryptor(keys)
 		if err != nil {
 			return fmt.Errorf("failed to create encryptor: %w", err)
 		}
 
 		store = filevault.New(parsed.Path)
 
-		testEncrypted, err := enc.EncryptKey(vaultConfig.EncryptionKey)
+		testEncrypted, err := enc.EncryptKey("test")
 		if err != nil {
 			return fmt.Errorf("failed to encrypt key: %w", err)
 		}
@@ -105,11 +102,12 @@ var initCmd = &cobra.Command{
 			return fmt.Errorf("test key mismatch")
 		}
 
+		fmt.Println("Vault initialized successfully")
+
 		return nil
 	},
 }
 
 func init() {
 	initCmd.Flags().StringVar(&initAddress, "address", fmt.Sprintf("file://%s/.gopass/{{vault}}", os.Getenv("HOME")), "Store address")
-	initCmd.Flags().StringVar(&initEncryptionKey, "encryption-key", "", "Encryption key for key (generated if not set)")
 }

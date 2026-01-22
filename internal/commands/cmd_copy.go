@@ -26,38 +26,36 @@ var copyCmd = &cobra.Command{
 			return err
 		}
 
-		encKeyName, err := encrypt.EncryptKey(keyName)
-		if err != nil {
-			return fmt.Errorf("failed to encrypt key name: %w", err)
-		}
+		keyID := encrypt.KeyID(keyName)
+		newKeyID := encrypt.KeyID(newKeyName)
 
-		encNewKeyName, err := encrypt.EncryptKey(newKeyName)
-		if err != nil {
-			return fmt.Errorf("failed to encrypt new key name: %w", err)
-		}
-
-		oldKeyPayload, err := store.GetKey(encKeyName)
+		_, encValue, err := store.GetKey(keyID)
 		if err != nil {
 			return fmt.Errorf("failed to get key: %w", err)
 		}
 
-		oldKeyPayloadDecrypted, err := encrypt.DecryptValue(keyName, oldKeyPayload)
+		decryptedValue, err := encrypt.DecryptValue(keyName, encValue)
 		if err != nil {
 			return fmt.Errorf("failed to decrypt key: %w", err)
 		}
 
-		if _, err = store.GetKey(encNewKeyName); err == nil {
+		if _, _, err = store.GetKey(newKeyID); err == nil {
 			if !copyForce {
 				return fmt.Errorf("destination key already exists, use --force to overwrite")
 			}
 		}
 
-		newKeyPayload, err := encrypt.EncryptValue(newKeyName, oldKeyPayloadDecrypted)
+		newEncKeyName, err := encrypt.EncryptKey(newKeyName)
+		if err != nil {
+			return fmt.Errorf("failed to encrypt new key name: %w", err)
+		}
+
+		newEncValue, err := encrypt.EncryptValue(newKeyName, decryptedValue)
 		if err != nil {
 			return fmt.Errorf("failed to encrypt new key: %w", err)
 		}
 
-		if err := store.SetKey(encNewKeyName, newKeyPayload); err != nil {
+		if err := store.SetKey(newKeyID, newEncKeyName, newEncValue); err != nil {
 			return fmt.Errorf("failed to set key: %w", err)
 		}
 

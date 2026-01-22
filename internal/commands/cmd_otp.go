@@ -30,12 +30,9 @@ var otpCodeCmd = &cobra.Command{
 			return err
 		}
 
-		encKeyName, err := encrypt.EncryptKey(keyName)
-		if err != nil {
-			return fmt.Errorf("failed to encrypt key name: %w", err)
-		}
+		keyID := encrypt.KeyID(keyName)
 
-		encValue, err := store.GetKey(encKeyName)
+		_, encValue, err := store.GetKey(keyID)
 		if err != nil {
 			return fmt.Errorf("failed to get key: %w", err)
 		}
@@ -104,14 +101,11 @@ Examples:
 			return err
 		}
 
-		encKeyName, err := encrypt.EncryptKey(keyName)
-		if err != nil {
-			return fmt.Errorf("failed to encrypt key name: %w", err)
-		}
+		keyID := encrypt.KeyID(keyName)
 
 		var existingPayload *vault.Payload
 
-		encValue, err := store.GetKey(encKeyName)
+		_, encValue, err := store.GetKey(keyID)
 		if err == nil {
 			if !otpInsertForce {
 				value, err := encrypt.DecryptValue(keyName, encValue)
@@ -190,12 +184,17 @@ Examples:
 			return fmt.Errorf("failed to marshal payload: %w", err)
 		}
 
+		encKeyName, err := encrypt.EncryptKey(keyName)
+		if err != nil {
+			return fmt.Errorf("failed to encrypt key name: %w", err)
+		}
+
 		newEncValue, err := encrypt.EncryptValue(keyName, payloadEncoded)
 		if err != nil {
 			return fmt.Errorf("failed to encrypt value: %w", err)
 		}
 
-		if err := store.SetKey(encKeyName, newEncValue); err != nil {
+		if err := store.SetKey(keyID, encKeyName, newEncValue); err != nil {
 			return fmt.Errorf("failed to store key: %w", err)
 		}
 
@@ -216,12 +215,9 @@ var otpURICmd = &cobra.Command{
 			return err
 		}
 
-		encKeyName, err := encrypt.EncryptKey(keyName)
-		if err != nil {
-			return fmt.Errorf("failed to encrypt key name: %w", err)
-		}
+		keyID := encrypt.KeyID(keyName)
 
-		encValue, err := store.GetKey(encKeyName)
+		_, encValue, err := store.GetKey(keyID)
 		if err != nil {
 			return fmt.Errorf("failed to get key: %w", err)
 		}

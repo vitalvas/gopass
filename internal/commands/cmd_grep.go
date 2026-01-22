@@ -17,7 +17,7 @@ var grepCmd = &cobra.Command{
 	RunE: func(_ *cobra.Command, args []string) error {
 		pattern := strings.ToLower(args[0])
 
-		encKeys, err := store.ListKeys()
+		keyIDs, err := store.ListKeys()
 		if err != nil {
 			return err
 		}
@@ -29,13 +29,13 @@ var grepCmd = &cobra.Command{
 
 		matches := make([]match, 0)
 
-		for _, encKey := range encKeys {
-			name, err := encrypt.DecryptKey(encKey)
+		for _, keyID := range keyIDs {
+			encKey, encValue, err := store.GetKey(keyID)
 			if err != nil {
-				return fmt.Errorf("failed to decrypt key: %w", err)
+				continue
 			}
 
-			encValue, err := store.GetKey(encKey)
+			name, err := encrypt.DecryptKey(encKey)
 			if err != nil {
 				continue
 			}

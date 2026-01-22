@@ -29,12 +29,9 @@ var passkeyCreateCmd = &cobra.Command{
 			return err
 		}
 
-		encKeyName, err := encrypt.EncryptKey(key)
-		if err != nil {
-			return fmt.Errorf("failed to encrypt key name: %w", err)
-		}
+		keyID := encrypt.KeyID(key)
 
-		if _, err := store.GetKey(encKeyName); err == nil {
+		if _, _, err := store.GetKey(keyID); err == nil {
 			if !passkeyForce {
 				return fmt.Errorf("key already exists: %s (use --force to overwrite)", key)
 			}
@@ -99,12 +96,17 @@ var passkeyCreateCmd = &cobra.Command{
 			return err
 		}
 
+		encKeyName, err := encrypt.EncryptKey(key)
+		if err != nil {
+			return fmt.Errorf("failed to encrypt key name: %w", err)
+		}
+
 		encValue, err := encrypt.EncryptValue(key, data)
 		if err != nil {
 			return fmt.Errorf("failed to encrypt value: %w", err)
 		}
 
-		if err := store.SetKey(encKeyName, encValue); err != nil {
+		if err := store.SetKey(keyID, encKeyName, encValue); err != nil {
 			return fmt.Errorf("failed to store key: %w", err)
 		}
 
@@ -127,12 +129,9 @@ var passkeyShowCmd = &cobra.Command{
 			return err
 		}
 
-		encKeyName, err := encrypt.EncryptKey(key)
-		if err != nil {
-			return fmt.Errorf("failed to encrypt key name: %w", err)
-		}
+		keyID := encrypt.KeyID(key)
 
-		encValue, err := store.GetKey(encKeyName)
+		_, encValue, err := store.GetKey(keyID)
 		if err != nil {
 			return fmt.Errorf("failed to get key: %w", err)
 		}
@@ -180,12 +179,9 @@ var passkeySignCmd = &cobra.Command{
 			return err
 		}
 
-		encKeyName, err := encrypt.EncryptKey(key)
-		if err != nil {
-			return fmt.Errorf("failed to encrypt key name: %w", err)
-		}
+		keyID := encrypt.KeyID(key)
 
-		encValue, err := store.GetKey(encKeyName)
+		_, encValue, err := store.GetKey(keyID)
 		if err != nil {
 			return fmt.Errorf("failed to get key: %w", err)
 		}
@@ -253,12 +249,17 @@ var passkeySignCmd = &cobra.Command{
 			return err
 		}
 
+		encKeyName, err := encrypt.EncryptKey(key)
+		if err != nil {
+			return fmt.Errorf("failed to encrypt key name: %w", err)
+		}
+
 		encUpdatedValue, err := encrypt.EncryptValue(key, updatedData)
 		if err != nil {
 			return fmt.Errorf("failed to encrypt value: %w", err)
 		}
 
-		if err := store.SetKey(encKeyName, encUpdatedValue); err != nil {
+		if err := store.SetKey(keyID, encKeyName, encUpdatedValue); err != nil {
 			return fmt.Errorf("failed to store key: %w", err)
 		}
 

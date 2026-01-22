@@ -16,15 +16,19 @@ var listCmd = &cobra.Command{
 	Short:   "List of stored keys",
 	PreRunE: loader,
 	RunE: func(_ *cobra.Command, _ []string) error {
-
-		encKeys, err := store.ListKeys()
+		keyIDs, err := store.ListKeys()
 		if err != nil {
 			return err
 		}
 
-		names := make([]string, 0, len(encKeys))
+		names := make([]string, 0, len(keyIDs))
 
-		for _, encKey := range encKeys {
+		for _, keyID := range keyIDs {
+			encKey, _, err := store.GetKey(keyID)
+			if err != nil {
+				return fmt.Errorf("failed to get key: %w", err)
+			}
+
 			name, err := encrypt.DecryptKey(encKey)
 			if err != nil {
 				return fmt.Errorf("failed to decrypt key: %w", err)

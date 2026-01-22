@@ -22,12 +22,9 @@ var getCmd = &cobra.Command{
 			return err
 		}
 
-		encKeyName, err := encrypt.EncryptKey(keyName)
-		if err != nil {
-			return fmt.Errorf("failed to encrypt key name: %w", err)
-		}
+		keyID := encrypt.KeyID(keyName)
 
-		encValue, err := store.GetKey(encKeyName)
+		_, encValue, err := store.GetKey(keyID)
 		if err != nil {
 			return fmt.Errorf("failed to get key: %w", err)
 		}

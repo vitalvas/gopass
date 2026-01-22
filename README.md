@@ -17,7 +17,8 @@ Cli commands are as compatible as possible (about 90%), to preserve user experie
 | Feature | GoPass | Pass |
 | --- | --- | --- |
 | Storage | Plugin backend | Encrypted files |
-| Encryption | Symmetric (AES-256-GCM) | Asymmetric (GPG) |
+| Encryption | ML-KEM-768 + AES-256-GCM | GPG |
+| Post-quantum secure | Yes | No |
 | Encryption key | Yes | No |
 | Encryption value | Yes | Yes |
 | Password generation | Yes | Yes |
@@ -44,8 +45,19 @@ Examples of valid keys:
 
 ## Security
 
-GoPass uses the `AES-256-GCM` algorithm for encryption with `BLAKE2b-256` for key derivation. The system represents itself as a key-value store.
+GoPass uses post-quantum encryption with `ML-KEM-768` (FIPS 203) for key encapsulation and `AES-256-GCM` for symmetric encryption. The system represents itself as a key-value store.
 
-Encryption and decryption occurs on the cli side, which allows you to protect data during transmission and storage.
+Encryption and decryption occurs on the CLI side, which allows you to protect data during transmission and storage.
 
-The key and values are encrypted in a special way. The key is encrypted using a hash from the passphrase. The values are encrypted using a hash of the key and passphrase combination, which reduces the ability for an attacker to track key movements.
+### Encryption scheme
+
+1. ML-KEM-768 key pair is generated during vault initialization
+2. For each encryption operation, a fresh shared secret is encapsulated using the public key
+3. The 32-byte shared secret is used directly as the AES-256-GCM key
+4. Values are encrypted with additional authenticated data (AAD) bound to the key name
+
+This provides:
+
+* Post-quantum security against future quantum computer attacks
+* Forward secrecy - each encryption uses a unique shared secret
+* Authenticated encryption with associated data (AEAD)

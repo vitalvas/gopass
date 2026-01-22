@@ -21,16 +21,14 @@ var generateCmd = &cobra.Command{
 			return err
 		}
 
-		encKeyName, err := encrypt.EncryptKey(keyName)
-		if err != nil {
-			return fmt.Errorf("failed to encrypt key name: %w", err)
-		}
+		keyID := encrypt.KeyID(keyName)
 
-		if _, err := store.GetKey(encKeyName); err == nil {
+		if _, _, err := store.GetKey(keyID); err == nil {
 			if !generateForce {
 				return fmt.Errorf("key already exists, use --force to overwrite")
 			}
 		}
+
 		pass := password.Generate(password.DefaultLength, password.DefaultLength, password.DefaultLength)
 
 		payload := vault.Payload{
@@ -42,12 +40,17 @@ var generateCmd = &cobra.Command{
 			return fmt.Errorf("failed to marshal payload: %w", err)
 		}
 
+		encKeyName, err := encrypt.EncryptKey(keyName)
+		if err != nil {
+			return fmt.Errorf("failed to encrypt key name: %w", err)
+		}
+
 		encValue, err := encrypt.EncryptValue(keyName, payloadEncoded)
 		if err != nil {
 			return fmt.Errorf("failed to encrypt value: %w", err)
 		}
 
-		if err := store.SetKey(encKeyName, encValue); err != nil {
+		if err := store.SetKey(keyID, encKeyName, encValue); err != nil {
 			return fmt.Errorf("failed to store key: %w", err)
 		}
 
